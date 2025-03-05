@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Product {
+public:
+    string productID;
+    string name;
+    double price;
+    Product(string id, string n, double p) : productID(id), name(n), price(p) {}
+};
+
+class ShoppingCart {
+private:
+    Product* items[10]; // Array to store pointers to products
+    int quantities[10]; // Array to store quantities
+    int itemCount;
+public:
+    ShoppingCart() : itemCount(0) {}
+    void addProduct(Product* p) {
+        for (int i = 0; i < itemCount; i++) {
+            if (items[i] == p) {
+                quantities[i]++;
+                cout << "Product added successfully!" << endl;
+                return;
+            }
+        }
+        if (itemCount < 10) {
+            items[itemCount] = p;
+            quantities[itemCount] = 1;
+            itemCount++;
+            cout << "Product added successfully!" << endl;
+        } else {
+            cout << "Cart is full!" << endl;
+        }
+    }
+    void viewCart() {
+        if (itemCount == 0) {
+            cout << "Cart is empty!" << endl;
+            return;
+        }
+        cout << "Shopping Cart:\nProduct ID  Name    Price   Quantity" << endl;
+        for (int i = 0; i < itemCount; i++) {
+            cout << items[i]->productID << "\t" << items[i]->name << "\t" << items[i]->price << "\t" << quantities[i] << endl;
+        }
+    }
+    bool isEmpty() {
+        return itemCount == 0;
+    }
+    double calculateTotal() {
+        double total = 0;
+        for (int i = 0; i < itemCount; i++) {
+            total += items[i]->price * quantities[i];
+        }
+        return total;
+    }
+    void clearCart() {
+        itemCount = 0;
+    }
+    void printCartItems() {
+        for (int i = 0; i < itemCount; i++) {
+            cout << items[i]->productID << "\t" << items[i]->name << "\t" << items[i]->price << "\t" << quantities[i] << endl;
+        }
+    }
+};
+
+class Order {
+public:
+    int orderID;
+    ShoppingCart cart;
+    double totalAmount;
+    Order(int id, ShoppingCart c, double amt) : orderID(id), cart(c), totalAmount(amt) {}
+    void displayOrder() {
+        cout << "Order ID: " << orderID << endl;
+        cout << "Total Amount: " << totalAmount << endl;
+        cout << "Order Details:" << endl;
+        cout << "Product ID  Name    Price   Quantity" << endl;
+        cart.printCartItems();
+        cout << endl;
+    }
+};
+
+Order* orders[10];
+int orderCount = 0;
+
+int main() {
+    Product products[] = {
+        Product("ABC", "Paper", 20),
+        Product("CDE", "Pencil", 10),
+        Product("QWE", "Notebook", 50)
+    };
+
+    ShoppingCart cart;
+    int choice;
+    do {
+        cout << "1. View Products\n2. View Shopping Cart\n3. View Orders\n4. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            cout << "Product ID  Name    Price" << endl;
+            for (Product& p : products) {
+                cout << p.productID << "\t" << p.name << "\t" << p.price << endl;
+            }
+            cout << "Enter product ID to add: ";
+            {
+                string id;
+                cin >> id;
+                for (Product& p : products) {
+                    if (p.productID == id) {
+                        cart.addProduct(&p);
+                        break;
+                    }
+                }
+            }
+            break;
+        case 2:
+            cart.viewCart();
+            if (!cart.isEmpty()) {
+                cout << "Do you want to checkout? (Y/N): ";
+                char checkout;
+                cin >> checkout;
+                if (checkout == 'Y' || checkout == 'y') {
+                    orders[orderCount] = new Order(orderCount + 1, cart, cart.calculateTotal());
+                    orderCount++;
+                    cart.clearCart();
+                    cout << "You have successfully checked out the products!" << endl;
+                }
+            }
+            break;
+        case 3:
+            if (orderCount == 0) {
+                cout << "No orders placed yet." << endl;
+            } else {
+                for (int i = 0; i < orderCount; i++) {
+                    orders[i]->displayOrder();
+                }
+            }
+            break;
+        case 4:
+            cout << "Exiting the program. Goodbye!" << endl;
+            break;
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
