@@ -86,9 +86,9 @@ int orderCount = 0;
 
 int main() {
     Product products[] = {
-        Product("ABC", "Paper", 20),
-        Product("CDE", "Pencil", 10),
-        Product("QWE", "Notebook", 50)
+        Product("ABC", "Jacket", 800),
+        Product("CDE", "Eyeglass", 500),
+        Product("QWE", "Organizer", 300)
     };
 
     ShoppingCart cart;
