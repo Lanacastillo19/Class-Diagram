@@ -13,8 +13,8 @@ public:
 
 class ShoppingCart {
 private:
-    Product* items[10]; // Array to store pointers to products
-    int quantities[10]; // Array to store quantities
+    Product* items[10]; 
+    int quantities[10]; 
     int itemCount;
 public:
     ShoppingCart() : itemCount(0) {}
